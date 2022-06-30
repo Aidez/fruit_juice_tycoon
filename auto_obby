@@ -1,0 +1,15 @@
+local function FinishObby()
+    repeat -- sometimes the game doesn't register doing the obby if you do it just once, which fucks you over if you're using SaveForObby
+        if tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) == "Lime green" and game.Players.LocalPlayer.Character ~= nil and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            wait()
+            firetouchinterest(game:GetService("Workspace").ObbyParts.RealObbyStartPart, game.Players.LocalPlayer.Character.HumanoidRootPart,0)
+            firetouchinterest(game:GetService("Workspace").ObbyParts.RealObbyStartPart, game.Players.LocalPlayer.Character.HumanoidRootPart,1)
+            wait(0.1)
+            firetouchinterest(game:GetService("Workspace").ObbyParts.VictoryPart, game.Players.LocalPlayer.Character.HumanoidRootPart,0)
+            firetouchinterest(game:GetService("Workspace").ObbyParts.VictoryPart, game.Players.LocalPlayer.Character.HumanoidRootPart,1)
+        end
+        wait()
+    until tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) ~= "Lime green"
+end
+game.Workspace.ObbyParts.ObbyStartPart:GetPropertyChangedSignal("BrickColor"):Connect(FinishObby)
+FinishObby()
