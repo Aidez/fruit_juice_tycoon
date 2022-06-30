@@ -44,7 +44,10 @@ game:GetService('RunService').Stepped:connect(function()
     if Debounce == false and game.Workspace.Tycoons:FindFirstChild(tostring(Player.Team)) and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
         Debounce = true
         if not _G.SaveForObby and not _G.OnlyCollectAndObby then
-            Player.Character.HumanoidRootPart.CFrame = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame
+            Player.Character.HumanoidRootPart.CFrame = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame * CFrame.new(0,-9,0) -- does it once and then a wait to wait for the movement to replicate
+            wait(0.1)
+            Player.Character.HumanoidRootPart.Anchored = true
+            Player.Character.HumanoidRootPart.CFrame = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame * CFrame.new(0,-9,0) -- then does it a second time to actually move yourself on the client
         end
         for i,v in pairs(game.Workspace.Tycoons[tostring(Player.Team)].Buttons:GetDescendants()) do
             firetouchinterest(v,Player.Character.HumanoidRootPart,0)
