@@ -1,0 +1,65 @@
+local SaveForObby = false -- set this to true to save your fruits for the 2x obby bonus
+local OnlyCollectAndObby = false -- set this to true if you only want to use auto-obby and auto-collect
+
+if game.Players.LocalPlayer == nil then
+    game.Players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+end
+local Player = game.Players.LocalPlayer
+local Debounce = false
+local function FinishObby()
+    repeat -- sometimes the game doesn't register doing the obby if you do it just once, which fucks you over if you're using SAVEFOROBBY
+        if tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) == "Lime green" and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+            wait()
+            firetouchinterest(game:GetService("Workspace").ObbyParts.RealObbyStartPart, Player.Character.HumanoidRootPart,0)
+            firetouchinterest(game:GetService("Workspace").ObbyParts.RealObbyStartPart, Player.Character.HumanoidRootPart,1)
+            wait(0.1)
+            firetouchinterest(game:GetService("Workspace").ObbyParts.VictoryPart, Player.Character.HumanoidRootPart,0)
+            firetouchinterest(game:GetService("Workspace").ObbyParts.VictoryPart, Player.Character.HumanoidRootPart,1)
+        end
+        wait()
+    until tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) ~= "Lime green"
+end
+game.Workspace.Tycoons.DescendantAdded:Connect(function(child) -- done like this since the tycoon is deleted and remade when you rebirth, so this is just easier.
+    if child:FindFirstAncestor("Drops") and child:FindFirstAncestor(tostring(Player.Team)) then
+        wait()
+        game:GetService("ReplicatedStorage").CollectFruit:FireServer(child)
+        wait()
+        if not SaveForObby and not OnlyCollectAndObby then
+            fireproximityprompt(game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.PromptAttachment.StartPrompt)
+        end
+    end
+end)
+game.Workspace.ObbyParts.ObbyStartPart:GetPropertyChangedSignal("BrickColor"):Connect(FinishObby)
+FinishObby()
+for i,v in pairs(getconnections(game:GetService("Players").LocalPlayer.Idled)) do
+    v:Disable()
+end
+if OnlyCollectAndObby then 
+    return
+end
+game:GetService('RunService').Stepped:connect(function()
+    if Debounce == false and game.Workspace.Tycoons:FindFirstChild(tostring(Player.Team)) and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+        Debounce = true
+        if not SaveForObby and not OnlyCollectAndObby then
+            Player.Character.HumanoidRootPart.CFrame = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame
+        end
+        for i,v in pairs(game.Workspace.Tycoons[tostring(Player.Team)].Buttons:GetDescendants()) do
+            firetouchinterest(v,Player.Character.HumanoidRootPart,0)
+            firetouchinterest(v,Player.Character.HumanoidRootPart,1)
+        end
+        if game.Workspace.Tycoons[tostring(Player.Team)].Purchased:FindFirstChild("Golden Tree Statue") then
+            Player.Character.HumanoidRootPart.CFrame = game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.CFrame
+            wait(0.2)
+            fireproximityprompt(game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.PrestigePrompt)
+            wait(2)
+        end
+        Debounce = false
+    else
+        for i,v in pairs(game.Workspace:GetDescendants()) do
+            if v.Name == "Entrance" and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+                firetouchinterest(v,Player.Character.HumanoidRootPart,0)
+                firetouchinterest(v,Player.Character.HumanoidRootPart,1)
+            end
+        end
+    end
+end)
