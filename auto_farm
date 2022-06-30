@@ -40,20 +40,38 @@ end
 if _G.OnlyCollectAndObby then 
     return
 end
+if Player.Character == nil then
+    Player.CharacterAdded:Wait()
+end
+Player.Character:WaitForChild("Humanoid",100).PlatformStand = true
+local BP = Instance.new("BodyPosition",Player.Character:WaitForChild("HumanoidRootPart"))
+BP.Position = BP.Parent.Position
+BP.D = 7500
+BP.P = 1000000
+BP.MaxForce = Vector3.new(400000,400000,400000)
 game:GetService('RunService').Stepped:connect(function()
+    if Player.Character ~= nil then
+        for i,v in pairs(Player.Character:GetChildren()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = false
+            end
+        end
+    end
     if Debounce == false and game.Workspace.Tycoons:FindFirstChild(tostring(Player.Team)) and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
         Debounce = true
         if not _G.SaveForObby and not _G.OnlyCollectAndObby then
-            Player.Character.HumanoidRootPart.CFrame = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame * CFrame.new(0,0,0)
+            local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame * CFrame.new(0,-9,0)
+            Player.Character.HumanoidRootPart.CFrame = TargetPosition
+            BP.Position = TargetPosition.p
         end
         for i,v in pairs(game.Workspace.Tycoons[tostring(Player.Team)].Buttons:GetDescendants()) do
             firetouchinterest(v,Player.Character.HumanoidRootPart,0)
             firetouchinterest(v,Player.Character.HumanoidRootPart,1)
         end
         if game.Workspace.Tycoons[tostring(Player.Team)].Purchased:FindFirstChild("Golden Tree Statue") then
-            Player.Character.HumanoidRootPart.Anchored = false
-            wait(0.1)
-            Player.Character.HumanoidRootPart.CFrame = game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.CFrame
+            local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.CFrame
+            Player.Character.HumanoidRootPart.CFrame = TargetPosition
+            BP.Position = TargetPosition.p
             wait(0.2)
             fireproximityprompt(game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.PrestigePrompt)
             wait(2)
@@ -67,4 +85,13 @@ game:GetService('RunService').Stepped:connect(function()
             end
         end
     end
+end)
+
+Player.CharacterAdded:Connect(function(Character)
+    Character:WaitForChild("Humanoid",100).PlatformStand = true
+    local BP = Instance.new("BodyPosition",Character:WaitForChild("HumanoidRootPart"))
+    BP.Position = BP.Parent.Position
+    BP.D = 7500
+    BP.P = 1000000
+    BP.MaxForce = Vector3.new(400000,400000,400000)
 end)
