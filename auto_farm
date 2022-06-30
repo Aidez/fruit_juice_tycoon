@@ -72,7 +72,7 @@ game:GetService('RunService').Stepped:connect(function()
             firetouchinterest(v,Player.Character.HumanoidRootPart,1)
         end
         if game.Workspace.Tycoons[tostring(Player.Team)].Purchased:FindFirstChild("Golden Tree Statue") then
-            local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.CFrame
+            local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.CFrame * CFrame.new(0,-9,0)
             Player.Character.HumanoidRootPart.CFrame = TargetPosition
             BP.Position = TargetPosition.p
             wait(0.2)
