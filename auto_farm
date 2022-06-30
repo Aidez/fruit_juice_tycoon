@@ -1,13 +1,16 @@
-local SaveForObby = false -- set this to true to save your fruits for the 2x obby bonus
-local OnlyCollectAndObby = false -- set this to true if you only want to use auto-obby and auto-collect
-
+if _G.SaveForObby == nil then
+    _G.SaveForObby = false
+end
+if _G.OnlyCollectAndObby == nil then
+    _G.OnlyCollectAndObby = false
+end
 if game.Players.LocalPlayer == nil then
     game.Players:GetPropertyChangedSignal("LocalPlayer"):Wait()
 end
 local Player = game.Players.LocalPlayer
 local Debounce = false
 local function FinishObby()
-    repeat -- sometimes the game doesn't register doing the obby if you do it just once, which fucks you over if you're using SAVEFOROBBY
+    repeat -- sometimes the game doesn't register doing the obby if you do it just once, which fucks you over if you're using SaveForObby
         if tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) == "Lime green" and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
             wait()
             firetouchinterest(game:GetService("Workspace").ObbyParts.RealObbyStartPart, Player.Character.HumanoidRootPart,0)
@@ -24,7 +27,7 @@ game.Workspace.Tycoons.DescendantAdded:Connect(function(child) -- done like this
         wait()
         game:GetService("ReplicatedStorage").CollectFruit:FireServer(child)
         wait()
-        if not SaveForObby and not OnlyCollectAndObby then
+        if not _G.SaveForObby and not _G.OnlyCollectAndObby then
             fireproximityprompt(game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.PromptAttachment.StartPrompt)
         end
     end
@@ -34,13 +37,13 @@ FinishObby()
 for i,v in pairs(getconnections(game:GetService("Players").LocalPlayer.Idled)) do
     v:Disable()
 end
-if OnlyCollectAndObby then 
+if _G.OnlyCollectAndObby then 
     return
 end
 game:GetService('RunService').Stepped:connect(function()
     if Debounce == false and game.Workspace.Tycoons:FindFirstChild(tostring(Player.Team)) and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
         Debounce = true
-        if not SaveForObby and not OnlyCollectAndObby then
+        if not _G.SaveForObby and not _G.OnlyCollectAndObby then
             Player.Character.HumanoidRootPart.CFrame = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame
         end
         for i,v in pairs(game.Workspace.Tycoons[tostring(Player.Team)].Buttons:GetDescendants()) do
