@@ -42,7 +42,7 @@ local function Touch(part,offset)
 end
 local function FinishObby()
     repeat -- sometimes the game doesn't register doing the obby if you do it just once, which fucks you over if you're using SaveForObby
-        if tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) == "Lime green" and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+        if tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) == "Lime green" then
             Debounce = true
             wait(0.2)
             Touch(game.Workspace.ObbyParts.RealObbyStartPart,-5)
@@ -85,9 +85,9 @@ game:GetService('RunService').Stepped:connect(function()
             Player.Character.Humanoid.PlatformStand = true
         end
     end
-    if Debounce == false and game.Workspace.Tycoons:FindFirstChild(tostring(Player.Team)) and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+    if Debounce == false and game.Workspace.Tycoons:FindFirstChild(tostring(Player.Team)) then
         Debounce = true
-        if not _G.SaveForObby and not _G.OnlyCollectAndObby then
+        if not _G.SaveForObby and not _G.OnlyCollectAndObby and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
             local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame * CFrame.new(0,-6,0)
             Player.Character.HumanoidRootPart.CFrame = TargetPosition
             BP.Position = TargetPosition.p
@@ -111,7 +111,7 @@ game:GetService('RunService').Stepped:connect(function()
                 end
             end
         end
-        if game.Workspace.Tycoons[tostring(Player.Team)].Purchased:FindFirstChild("Golden Tree Statue") then
+        if game.Workspace.Tycoons[tostring(Player.Team)].Purchased:FindFirstChild("Golden Tree Statue") and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
             local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.CFrame * CFrame.new(0,-6,0)
             Player.Character.HumanoidRootPart.CFrame = TargetPosition
             BP.Position = TargetPosition.p
@@ -123,7 +123,7 @@ game:GetService('RunService').Stepped:connect(function()
     elseif Debounce == false and not game.Workspace.Tycoons:FindFirstChild(tostring(Player.Team)) and tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) ~= "Lime green" then
         Debounce = true
         for i,v in pairs(game.Workspace:GetDescendants()) do
-            if v.Name == "Entrance" and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+            if v.Name == "Entrance" then
                 Touch(v,-10)
                 break
             end
