@@ -25,6 +25,7 @@ local function FinishObby()
     repeat -- sometimes the game doesn't register doing the obby if you do it just once, which fucks you over if you're using SaveForObby
         if tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) == "Lime green" and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
             Debounce = true
+            wait(0.2)
             local TargetPosition = game.Workspace.ObbyParts.RealObbyStartPart.CFrame * CFrame.new(0,-5,0)
             Player.Character.HumanoidRootPart.CFrame = TargetPosition
             if not _G.OnlyCollectAndObby then
