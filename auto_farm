@@ -9,15 +9,41 @@ if game.Players.LocalPlayer == nil then
 end
 local Player = game.Players.LocalPlayer
 local Debounce = false
+if Player.Character == nil then
+    Player.CharacterAdded:Wait()
+end
+Player.Character:WaitForChild("Humanoid",100).PlatformStand = true
+local BP = Instance.new("BodyPosition",Player.Character:WaitForChild("HumanoidRootPart"))
+BP.Position = BP.Parent.Position
+BP.D = 7500
+BP.P = 1000000
+BP.MaxForce = Vector3.new(400000,400000,400000)
+if _G.OnlyCollectAndObby then 
+    BP:Destroy() -- this is cringe but idc
+end
 local function FinishObby()
     repeat -- sometimes the game doesn't register doing the obby if you do it just once, which fucks you over if you're using SaveForObby
         if tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) == "Lime green" and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+            local TargetPosition = game.Workspace.ObbyParts.RealObbyStartPart.CFrame * CFrame.new(0,-5,0)
+            Player.Character.HumanoidRootPart.CFrame = TargetPosition
+            if not _G.OnlyCollectAndObby then
+                BP.Position = TargetPosition.p
+            end
             wait()
-            firetouchinterest(game:GetService("Workspace").ObbyParts.RealObbyStartPart, Player.Character.HumanoidRootPart,0)
-            firetouchinterest(game:GetService("Workspace").ObbyParts.RealObbyStartPart, Player.Character.HumanoidRootPart,1)
+            firetouchinterest(game.Workspace.ObbyParts.RealObbyStartPart, Player.Character.HumanoidRootPart,0)
+            firetouchinterest(game.Workspace.ObbyParts.RealObbyStartPart, Player.Character.HumanoidRootPart,1)
             wait(0.1)
-            firetouchinterest(game:GetService("Workspace").ObbyParts.VictoryPart, Player.Character.HumanoidRootPart,0)
-            firetouchinterest(game:GetService("Workspace").ObbyParts.VictoryPart, Player.Character.HumanoidRootPart,1)
+            if Player.Character == nil or not Player.Character:FindFirstChild("HumanoidRootPart") then
+                return
+            end
+            local TargetPosition = game.Workspace.ObbyParts.VictoryPart.CFrame * CFrame.new(0,-5,0)
+            Player.Character.HumanoidRootPart.CFrame = TargetPosition
+            if not _G.OnlyCollectAndObby then
+                BP.Position = TargetPosition.p
+            end
+            wait()
+            firetouchinterest(game.Workspace.ObbyParts.VictoryPart, Player.Character.HumanoidRootPart,0)
+            firetouchinterest(game.Workspace.ObbyParts.VictoryPart, Player.Character.HumanoidRootPart,1)
         end
         wait()
     until tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) ~= "Lime green"
@@ -40,15 +66,6 @@ end
 if _G.OnlyCollectAndObby then 
     return
 end
-if Player.Character == nil then
-    Player.CharacterAdded:Wait()
-end
-Player.Character:WaitForChild("Humanoid",100).PlatformStand = true
-local BP = Instance.new("BodyPosition",Player.Character:WaitForChild("HumanoidRootPart"))
-BP.Position = BP.Parent.Position
-BP.D = 7500
-BP.P = 1000000
-BP.MaxForce = Vector3.new(400000,400000,400000)
 game:GetService('RunService').Stepped:connect(function()
     if Player.Character ~= nil then
         for i,v in pairs(Player.Character:GetChildren()) do
@@ -63,16 +80,35 @@ game:GetService('RunService').Stepped:connect(function()
     if Debounce == false and game.Workspace.Tycoons:FindFirstChild(tostring(Player.Team)) and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
         Debounce = true
         if not _G.SaveForObby and not _G.OnlyCollectAndObby then
-            local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame * CFrame.new(0,-9,0)
+            local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.CFrame * CFrame.new(0,-6,0)
             Player.Character.HumanoidRootPart.CFrame = TargetPosition
             BP.Position = TargetPosition.p
+            wait(0.1)
         end
         for i,v in pairs(game.Workspace.Tycoons[tostring(Player.Team)].Buttons:GetDescendants()) do
-            firetouchinterest(v,Player.Character.HumanoidRootPart,0)
-            firetouchinterest(v,Player.Character.HumanoidRootPart,1)
+            if v:IsA("TouchTransmitter") and v.Parent ~= nil then
+                local Cost = math.huge
+                if v.Parent:FindFirstChild("ButtonLabel") and v.Parent.ButtonLabel:FindFirstChild("CostLabel") then
+                    local Based,Cringe = string.gsub(v.Parent.ButtonLabel.CostLabel.Text,"%p","") -- fuck you roblox for making string.gsub return 2 arguments
+                    if tonumber(Based) ~= nil then
+                        Cost = tonumber(Based)
+                    end
+                end
+                if Cost <= tonumber(game.Players.LocalPlayer.leaderstats.Money.Value) and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+                    local TargetPosition = v.Parent.CFrame * CFrame.new(0,-5,0)
+                    Player.Character.HumanoidRootPart.CFrame = TargetPosition
+                    BP.Position = TargetPosition.p
+                    wait()
+                    if v ~= nil and v.Parent ~= nil and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+                        firetouchinterest(v.Parent,Player.Character.HumanoidRootPart,0)
+                        firetouchinterest(v.Parent,Player.Character.HumanoidRootPart,1) 
+                    end
+                end
+                wait()
+            end
         end
         if game.Workspace.Tycoons[tostring(Player.Team)].Purchased:FindFirstChild("Golden Tree Statue") then
-            local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.CFrame * CFrame.new(0,-9,0)
+            local TargetPosition = game.Workspace.Tycoons[tostring(Player.Team)].Purchased["Golden Tree Statue"].StatueBottom.CFrame * CFrame.new(0,-6,0)
             Player.Character.HumanoidRootPart.CFrame = TargetPosition
             BP.Position = TargetPosition.p
             wait(0.2)
@@ -80,13 +116,20 @@ game:GetService('RunService').Stepped:connect(function()
             wait(2)
         end
         Debounce = false
-    else
+    elseif Debounce == false and not game.Workspace.Tycoons:FindFirstChild(tostring(Player.Team)) then
+        Debounce = true
         for i,v in pairs(game.Workspace:GetDescendants()) do
             if v.Name == "Entrance" and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+                local TargetPosition = v.CFrame * CFrame.new(0,-3,0)
+                Player.Character.HumanoidRootPart.CFrame = TargetPosition
+                BP.Position = TargetPosition.p
+                wait()
                 firetouchinterest(v,Player.Character.HumanoidRootPart,0)
                 firetouchinterest(v,Player.Character.HumanoidRootPart,1)
+                break
             end
         end
+        Debounce = false
     end
 end)
 
