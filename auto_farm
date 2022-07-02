@@ -53,7 +53,10 @@ game.Workspace.Tycoons.DescendantAdded:Connect(function(child) -- done like this
         wait()
         game:GetService("ReplicatedStorage").CollectFruit:FireServer(child)
         wait()
-        if not _G.SaveForObby and not _G.OnlyCollectAndObby then
+        if not _G.SaveForObby and not _G.OnlyCollectAndObby and game.Workspace.Tycoons[tostring(Player.Team)]:FindFirstChild("Essentials") then
+            if not game.Workspace.Tycoons[tostring(Player.Team)].Essentials:FindFirstChild("JuiceMaker") then
+                return
+            end
             fireproximityprompt(game.Workspace.Tycoons[tostring(Player.Team)].Essentials.JuiceMaker.StartJuiceMakerButton.PromptAttachment.StartPrompt)
         end
     end
@@ -93,6 +96,9 @@ game:GetService('RunService').Stepped:connect(function()
                     if tonumber(Based) ~= nil then
                         Cost = tonumber(Based)
                     end
+                end
+                if string.find(string.lower(v.Parent.ButtonLabel.CostLabel.Text), "free") then
+                    Cost = 0
                 end
                 if Cost <= tonumber(game.Players.LocalPlayer.leaderstats.Money.Value) and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
                     local TargetPosition = v.Parent.CFrame * CFrame.new(0,-5,0)
