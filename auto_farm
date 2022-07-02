@@ -24,12 +24,13 @@ end
 local function FinishObby()
     repeat -- sometimes the game doesn't register doing the obby if you do it just once, which fucks you over if you're using SaveForObby
         if tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) == "Lime green" and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
+            Debounce = true
             local TargetPosition = game.Workspace.ObbyParts.RealObbyStartPart.CFrame * CFrame.new(0,-5,0)
             Player.Character.HumanoidRootPart.CFrame = TargetPosition
             if not _G.OnlyCollectAndObby then
                 BP.Position = TargetPosition.p
             end
-            wait()
+            wait(0.1)
             firetouchinterest(game.Workspace.ObbyParts.RealObbyStartPart, Player.Character.HumanoidRootPart,0)
             firetouchinterest(game.Workspace.ObbyParts.RealObbyStartPart, Player.Character.HumanoidRootPart,1)
             wait(0.1)
@@ -41,9 +42,10 @@ local function FinishObby()
             if not _G.OnlyCollectAndObby then
                 BP.Position = TargetPosition.p
             end
-            wait()
+            wait(0.1)
             firetouchinterest(game.Workspace.ObbyParts.VictoryPart, Player.Character.HumanoidRootPart,0)
             firetouchinterest(game.Workspace.ObbyParts.VictoryPart, Player.Character.HumanoidRootPart,1)
+            Debounce = false
         end
         wait()
     until tostring(game.Workspace.ObbyParts.ObbyStartPart.BrickColor) ~= "Lime green"
@@ -104,13 +106,13 @@ game:GetService('RunService').Stepped:connect(function()
                     local TargetPosition = v.Parent.CFrame * CFrame.new(0,-5,0)
                     Player.Character.HumanoidRootPart.CFrame = TargetPosition
                     BP.Position = TargetPosition.p
-                    wait()
+                    wait(0.1)
                     if v ~= nil and v.Parent ~= nil and Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart") then
                         firetouchinterest(v.Parent,Player.Character.HumanoidRootPart,0)
                         firetouchinterest(v.Parent,Player.Character.HumanoidRootPart,1) 
                     end
+                    wait(0.1)
                 end
-                wait()
             end
         end
         if game.Workspace.Tycoons[tostring(Player.Team)].Purchased:FindFirstChild("Golden Tree Statue") then
